@@ -1,44 +1,41 @@
 <script lang="ts">
-  import Modal from "./Modal.svelte";
+  import Header from "./components/Header.svelte";
+  import Footer from "./components/Footer.svelte";
+  import Tabs from "./lib/Tabs.svelte";
+  import CreatePollFrom from "./components/CreatePollFrom.svelte";
+  import PollList from "./components/PollList.svelte";
+  import polls from "./stores/PollStore";
 
-  interface People {
-    id: number,
-    name: string,
-    age: number,
-  }
+  let items = ["Current Polls", "Add New Poll"];
+  let activeItem = items[0];
   
-  let people: People[] = [
-    { id:1, name: "Zoro", age: 12 },
-    { id:2, name: "Luffy", age: 15 },
-  ]
-  
-  let showModal = false;
 
-  function handleDelete(e:Event, id: number) {
-    people = people.filter(item => item.id != id);
-    console.log(e.target);
+  const tabChange = (e: CustomEvent) => {
+    activeItem = e.detail;
   }
+
+  const handleAddPoll = (e: CustomEvent) => {
+    $polls = [...$polls, e.detail];
+
+    activeItem = items[0];
+  }
+
 </script>
 
-<Modal 
-  message={"This messsage from props!"} 
-  {showModal}
-  isDanger={false}
-  on:click={() => showModal = !showModal}
-/>
+<Header />
 <main>
-  <button on:click={() => showModal = !showModal}>Open Modal</button>
-  {#each people as person (person.id) }
-    <div class="person">
-      <h4>{person.name} - {person.age}</h4>
-      <button on:click={(e) => {handleDelete(e, person.id)}}>delete</button>
-    </div>
-  {/each}
+  <h1>Hello, Man!</h1>
+  <Tabs {items} {activeItem} on:tabChange={tabChange} />
+  {#if activeItem === "Current Polls"}
+    <PollList />
+  {:else if activeItem === "Add New Poll"}
+    <CreatePollFrom on:addPoll={handleAddPoll} />
+  {/if}
 </main>
+<Footer />
 
 <style> 
-  .person {
-    display: flex;
-    gap: 24px;
+  main {
+    padding: 0 40px;
   }
 </style>

@@ -11,7 +11,8 @@
             class="modal"
             class:danger={isDanger}
         >
-            <p>{message}</p>
+            <slot name="header" />
+            <slot />
         </div>
     </div>
 {/if}
