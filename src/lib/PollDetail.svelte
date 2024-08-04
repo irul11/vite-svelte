@@ -2,23 +2,26 @@
     import type { Poll } from "@/utils/types";
     import Card from "./Card.svelte";
     import polls from "@/stores/PollStore";
+    import { updateVote } from "@/utils/utils";
 
     export let poll: Poll;
 
-    $: totalVotes = poll.countA + poll.countB;
-    $: percentA = poll.countA === 0 && poll.countB === 0 ? 50 : (100/totalVotes * poll.countA);
-    $: percentB = poll.countA === 0 && poll.countB === 0 ? 50 : (100/totalVotes * poll.countB);
+    $: totalVotes = poll.count_a + poll.count_b;
+    $: percentA = poll.count_a === 0 && poll.count_b === 0 ? 50 : (100/totalVotes * poll.count_a);
+    $: percentB = poll.count_a === 0 && poll.count_b === 0 ? 50 : (100/totalVotes * poll.count_b);
 
-    const handleVote = (option: string, id: number) => {
+    const handleVote = async (option: string, id: number) => {
+        await updateVote(id, option)
+
         let votedPoll = $polls.find(poll => poll.id === id);
         if (!votedPoll) {
             return;
         }
         if (votedPoll && option === "a") {
-            votedPoll.countA++;
+            votedPoll.count_a++;
         } 
         if (votedPoll && option === "b") {
-            votedPoll.countB++;
+            votedPoll.count_b++;
         }
         $polls = $polls;
     };
@@ -38,22 +41,22 @@
             <button 
                 class="poll-button"
                 on:click={() => handleVote("a", poll.id)}
-            >{ poll.answerA }</button>
+            >{ poll.answer_a }</button>
             
             <button 
                 class="poll-button"
                 on:click={() => handleVote("b", poll.id)}
-            >{ poll.answerB }</button>
+            >{ poll.answer_b }</button>
         </div>
         <div class="answer">
             <div 
                 class="percent percent-a"
                 style="width: {percentA}%;"
-            >{ poll.answerA } ({ poll.countA })</div>
+            >{ poll.answer_a } ({ poll.count_a })</div>
             <div 
                 class="percent percent-b"
                 style="width: {percentB}%;"
-            >{ poll.answerB } ({ poll.countB})</div>
+            >{ poll.answer_b } ({ poll.count_b})</div>
         </div>
         <div>
             <button class="poll-delete" on:click={() => handleDelete(poll.id)}>

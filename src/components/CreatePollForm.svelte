@@ -3,13 +3,13 @@
     
     let fields = {
         question: "",
-        answerA: "",
-        answerB: "",
+        answer_a: "",
+        answer_b: "",
     };
     let errors = {
         question: "",
-        answerA: "",
-        answerB: "",
+        answer_a: "",
+        answer_b: "",
     };
     let valid = false;
     let dispatch = createEventDispatcher();
@@ -28,37 +28,37 @@
             errors.question = "";
         }
 
-        if (fields.answerA.trim().length < 1) {
+        if (fields.answer_a.trim().length < 1) {
             valid = false;
-            errors.answerA = "Answer cannot be empty";
+            errors.answer_a = "Answer cannot be empty";
             setTimeout(() => {
-                errors.answerA = "";
+                errors.answer_a = "";
             }, 2000)
         } else {
-            errors.answerA = "";
+            errors.answer_a = "";
         }
 
-        if (fields.answerB.trim().length < 1) {
+        if (fields.answer_b.trim().length < 1) {
             valid = false;
-            errors.answerB = "Answer cannot be empty";
+            errors.answer_b = "Answer cannot be empty";
             setTimeout(() => {
-                errors.answerB = "";
+                errors.answer_b = "";
             }, 2000)
         } else {
-            errors.answerB = "";
+            errors.answer_b = "";
         }
 
         if (valid) {
             dispatch("addPoll", {
                 ...fields,
-                countA: 0,
-                countB: 0,
+                count_a: 0,
+                count_b: 0,
                 id: Math.random(),
             });
 
             fields.question = "";
-            fields.answerA = "";
-            fields.answerB = "";
+            fields.answer_a = "";
+            fields.answer_b = "";
         }
 
     };
@@ -72,13 +72,13 @@
     </div>
     <div class="form-field">
         <label for="answer-a">Answer A</label>
-        <input type="text" id="answer-a" bind:value={fields.answerA}>
-        <div class="error">{ errors.answerA }</div>
+        <input type="text" id="answer-a" bind:value={fields.answer_a}>
+        <div class="error">{ errors.answer_a }</div>
     </div>
     <div class="form-field">
         <label for="answer-b">Answer B</label>
-        <input type="text" id="answer-b" bind:value={fields.answerB}>
-        <div class="error">{ errors.answerB }</div>
+        <input type="text" id="answer-b" bind:value={fields.answer_b}>
+        <div class="error">{ errors.answer_b }</div>
     </div>
     <button type="submit">Add Poll</button>
 </form>

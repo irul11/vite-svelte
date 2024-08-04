@@ -1,8 +1,8 @@
 export interface Poll {
     id: number,
     question: string,
-    answerA: string,
-    answerB: string,
-    countA: number,
-    countB: number,
+    answer_a: string,
+    answer_b: string,
+    count_a: number,
+    count_b: number,
 }

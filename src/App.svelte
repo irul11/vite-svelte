@@ -2,7 +2,7 @@
   import Header from "./components/Header.svelte";
   import Footer from "./components/Footer.svelte";
   import Tabs from "./lib/Tabs.svelte";
-  import CreatePollFrom from "./components/CreatePollFrom.svelte";
+  import CreatePollFrom from "./components/CreatePollForm.svelte";
   import PollList from "./components/PollList.svelte";
   import polls from "./stores/PollStore";
 

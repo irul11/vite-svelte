@@ -4,10 +4,10 @@ import { writable } from "svelte/store";
 const polls = writable<Poll[]>([{
     id: 1,
     question: "Python or Javascript",
-    answerA: "Python",
-    answerB: "Javascript",
-    countA: 8,
-    countB: 12,
+    answer_a: "Python",
+    answer_b: "Javascript",
+    count_a: 8,
+    count_b: 12,
 }]);
 
 export default polls;
