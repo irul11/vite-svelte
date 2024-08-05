@@ -5,13 +5,8 @@
 <style>
     footer {
         text-align: center;
-        position: absolute;
-        left: 0;
-        bottom: 0;
         width: 100vw;
+        height: 24px;
     }
     
-    /* .copyright {
-        color: ;
-    } */
 </style>

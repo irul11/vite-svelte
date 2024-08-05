@@ -1,7 +1,9 @@
-<script>
+<script lang="ts">
+    import type { CreatePoll } from "@/utils/types";
     import { createEventDispatcher } from "svelte";
     
-    let fields = {
+    export let isEdit = false;
+    export let fields: CreatePoll = {
         question: "",
         answer_a: "",
         answer_b: "",
@@ -49,12 +51,7 @@
         }
 
         if (valid) {
-            dispatch("addPoll", {
-                ...fields,
-                count_a: 0,
-                count_b: 0,
-                id: Math.random(),
-            });
+            dispatch("addPoll", fields);
 
             fields.question = "";
             fields.answer_a = "";
@@ -80,7 +77,9 @@
         <input type="text" id="answer-b" bind:value={fields.answer_b}>
         <div class="error">{ errors.answer_b }</div>
     </div>
-    <button type="submit">Add Poll</button>
+    {#if !isEdit}
+        <button type="submit">Add Poll</button>
+    {/if}
 </form>
 
 <style>

@@ -1,34 +1,41 @@
 <script lang="ts">
     import type { Poll } from "@/utils/types";
     import Card from "./Card.svelte";
-    import polls from "@/stores/PollStore";
-    import { updateVote } from "@/utils/utils";
+    import { createEventDispatcher } from "svelte";
+    import { deletePolls, updatePolls } from "@/utils/utils";
+    import { tweened } from "svelte/motion";
 
+    const dispatch = createEventDispatcher();
+    
     export let poll: Poll;
-
+    
     $: totalVotes = poll.count_a + poll.count_b;
     $: percentA = poll.count_a === 0 && poll.count_b === 0 ? 50 : (100/totalVotes * poll.count_a);
     $: percentB = poll.count_a === 0 && poll.count_b === 0 ? 50 : (100/totalVotes * poll.count_b);
 
-    const handleVote = async (option: string, id: number) => {
-        await updateVote(id, option)
+    const tweenedA = tweened(percentA);
+    const tweenedB = tweened(percentB);
+    $: tweenedA.set(percentA)
+    $: tweenedB.set(percentB)
 
-        let votedPoll = $polls.find(poll => poll.id === id);
-        if (!votedPoll) {
-            return;
-        }
-        if (votedPoll && option === "a") {
-            votedPoll.count_a++;
-        } 
-        if (votedPoll && option === "b") {
-            votedPoll.count_b++;
-        }
-        $polls = $polls;
+    const handleVote = async (option: string, id: number) => {        
+        dispatch("updateVote", {
+            option,
+            id,
+        })
     };
 
     const handleDelete = (id: number) => {
-        polls.update(currPolls => {
-            return currPolls.filter(poll => poll.id !== id);
+        dispatch("deletePolls", {
+            id,
+            handleDelete: deletePolls, 
+        });
+    }
+
+    const handleEdit = (poll: Poll) => {
+        dispatch("editPolls", {
+            poll,
+            handleEdit: updatePolls,
         });
     }
 </script>
@@ -40,7 +47,7 @@
         <div class="poll-question" >
             <button 
                 class="poll-button"
-                on:click={() => handleVote("a", poll.id)}
+                on:click|preventDefault={() => handleVote("a", poll.id)}
             >{ poll.answer_a }</button>
             
             <button 
@@ -51,15 +58,18 @@
         <div class="answer">
             <div 
                 class="percent percent-a"
-                style="width: {percentA}%;"
+                style="width: {$tweenedA}%;"
             >{ poll.answer_a } ({ poll.count_a })</div>
             <div 
                 class="percent percent-b"
-                style="width: {percentB}%;"
+                style="width: {$tweenedB}%;"
             >{ poll.answer_b } ({ poll.count_b})</div>
         </div>
-        <div>
-            <button class="poll-delete" on:click={() => handleDelete(poll.id)}>
+        <div class="btn">
+            <button class="poll-btn poll-edit" on:click={() => handleEdit(poll)}>
+                <img src="/edit.svg" alt="" width="24px" height="24px">
+            </button>
+            <button class="poll-btn poll-delete" on:click={() => handleDelete(poll.id)}>
                 <img src="/remove.svg" alt="" width="24px" height="24px">
             </button>
         </div>
@@ -100,6 +110,7 @@
         position: absolute;
         padding: 5px;
         box-sizing: border-box;
+        overflow: hidden;
     }
     .percent-a {
         background: rgba(109, 255, 136, 0.4);
@@ -110,12 +121,21 @@
         background: rgba(220, 116, 151, 0.4);
         border-right: 4px solid rgb(220, 116, 151);
     }
-    .poll-delete {
+    .btn {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 12px;
+    }
+    .poll-btn {
         padding: 5px;
-        margin: 0 auto;
-        background-color: rgb(255, 66, 66);
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    .poll-edit {
+        background: rgb(62, 149, 255);
+    }
+    .poll-delete {
+        background-color: rgb(255, 66, 66);
     }
 </style>

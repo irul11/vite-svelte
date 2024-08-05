@@ -1,23 +1,44 @@
 <script lang="ts">
     import PollDetail from "@/lib/PollDetail.svelte";
-    import polls from "@/stores/PollStore";
-    import { getData } from "@/utils/utils";
+    import type { Poll } from "@/utils/types";
+    import { getPollData, getPollDataById, updatePolls, updateVote } from "@/utils/utils";
+    import { fade } from "svelte/transition";
 
-    const promise = getData();
+    let loading = true;
+    let polls: Poll[] = [];
 
+    const fetchPollData = async () => {
+        loading = true;
+        polls = await getPollData();
+        loading = false;
+    }
+
+    const handleVote = async (e: CustomEvent) => {
+        const { id, option } = e.detail;
+        await updateVote(id, option);
+
+        const updatedPoll = await getPollDataById(id);
+        const idx = polls.findIndex(poll => poll.id === id);
+        
+        if (idx !== -1) {
+            polls[idx] = updatedPoll;
+        }
+    }
+
+    fetchPollData();
 </script>
 
-{#await promise}
-    <h3>Waiting for data</h3>
-{:then polls} 
+{#if loading}
+    <h3>.....</h3>
+{:else} 
     <div class="poll-list">
         {#each polls as poll (poll.id)}
-            <div class="poll-question">
-                <PollDetail {poll} />
+            <div class="poll-question" transition:fade>
+                <PollDetail {poll} on:updateVote={handleVote} on:deletePolls on:editPolls/>
             </div>
         {/each}        
     </div>
-{/await}
+{/if}
 
 <style>
     .poll-list {
