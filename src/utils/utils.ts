@@ -1,7 +1,9 @@
 import type { CreatePoll, Poll } from "./types";
 
+const apiUrl = import.meta.env.PROD ? import.meta.env.VITE_API_URL : import.meta.env.VITE_API_URL_DEV;
+
 export async function getPollData(): Promise<Poll[]> {
-    const res = await fetch("http://localhost:4343/polls");
+    const res = await fetch(`${apiUrl}/polls`);
     const text = await res.text();
     const data = JSON.parse(text);
 
@@ -13,7 +15,7 @@ export async function getPollData(): Promise<Poll[]> {
 }
 
 export async function getPollDataById(id: number): Promise<Poll> {
-    const res = await fetch(`http://localhost:4343/polls/${id}`);
+    const res = await fetch(`${apiUrl}/polls/${id}`);
     const text = await res.text();
     const data = JSON.parse(text);
 
@@ -25,7 +27,7 @@ export async function getPollDataById(id: number): Promise<Poll> {
 }
 
 export async function createPolls(body: CreatePoll) {
-    const res = await fetch("http://localhost:4343/polls", {
+    const res = await fetch(`${apiUrl}/polls`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -41,7 +43,7 @@ export async function createPolls(body: CreatePoll) {
 }
 
 export async function updatePolls(id: number, body: CreatePoll) {
-    const res = await fetch(`http://localhost:4343/polls/${id}`, {
+    const res = await fetch(`${apiUrl}/polls/${id}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json"
@@ -57,7 +59,7 @@ export async function updatePolls(id: number, body: CreatePoll) {
 }
 
 export async function updateVote(pollsId: number, option: string) {
-    const res = await fetch(`http://localhost:4343/polls/${pollsId}/${option}`, {
+    const res = await fetch(`${apiUrl}/polls/${pollsId}/${option}`, {
         method: "PUT"
     });
 
@@ -69,7 +71,7 @@ export async function updateVote(pollsId: number, option: string) {
 }
 
 export async function deletePolls(pollsId: number) {
-    const res = await fetch(`http://localhost:4343/polls/${pollsId}`, {
+    const res = await fetch(`${apiUrl}/polls/${pollsId}`, {
         method: "DELETE"
     });
 

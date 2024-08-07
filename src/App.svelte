@@ -8,8 +8,8 @@
   import { createPolls } from "./utils/utils";
   import type { CreatePoll, DeleteModalProps, EditModalProps } from "./utils/types";
 
-  let items = ["Current Polls", "Add New Poll"];
-  let activeItem = items[0];  
+  let tabs = ["Current Polls", "Add New Poll"];
+  let activeItem = tabs[0];  
 
   const deleteModalProps: DeleteModalProps = {
     isModalOpen: false,
@@ -37,7 +37,7 @@
     const body: CreatePoll = { question, answer_a, answer_b };
     await createPolls(body);
     
-    activeItem = items[0];
+    activeItem = tabs[0];
   };
 
   const handleModalDelete = (e: CustomEvent) => {
@@ -70,7 +70,7 @@
 <Header />
 <main>
   <h1>Hello, Man!</h1>
-  <Tabs {items} {activeItem} on:tabChange={tabChange} />
+  <Tabs items={tabs} {activeItem} on:tabChange={tabChange} />
   {#if activeItem === "Current Polls"}
     <PollList on:deletePolls={handleModalDelete} on:editPolls={handleModalEdit}/>
   {:else if activeItem === "Add New Poll"}
